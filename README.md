@@ -33,3 +33,25 @@ year={2020},
 url={https://openreview.net/forum?id=SkgC6TNFvr}
 }
 ```
+
+## Run reinforced segmentation on uploaded sample pairs
+A self-contained script is provided to train a lightweight reinforced segmentation model directly on matching `sample_images/*.tif` + `sample_masks/*.tif` pairs:
+
+```bash
+python sample_reinforced_segmentation.py \
+  --images-dir sample_images \
+  --masks-dir sample_masks \
+  --output-dir outputs/reinforced_segmentation
+```
+
+Outputs:
+- `outputs/reinforced_segmentation/predictions/*.tif`: predicted masks per input image
+- `outputs/reinforced_segmentation/metrics.json`: training history (train/val metrics + reward + test metrics)
+- `outputs/reinforced_segmentation/tiny_unet_reinforced.pth`: final trained model checkpoint
+- `outputs/reinforced_segmentation/best_tiny_unet_reinforced.pth`: best reward checkpoint
+
+Notes:
+- Data are split into train/validation/test sets (`--val-ratio`, `--test-ratio`).
+- Reward strongly favors **higher validation IoU** and **lower validation loss**.
+
+Additional runtime deps for this script: `torch`, `numpy`, `tifffile`.
